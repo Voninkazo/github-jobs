@@ -1,0 +1,49 @@
+body {
+  font-family: "Roboto";
+  font-size: 16px;
+  margin: 0;
+  background-color: #F6F7FB;
+  border-radius: 12px;
+}
+
+#root {
+  padding: 15px;
+}
+
+header {
+  padding-top: 42px;
+  padding-bottom: 42px;
+  background-image: url(/backgroundImg.f44d7848.png);
+  background-repeat: no-repeat;
+  background-position: 94%;
+  background-size: cover;
+}
+header form {
+  align-items: center;
+}
+
+.single_checkbox_container {
+  display: flex;
+  flex-direction: row;
+  padding-top: 24px;
+  padding-bottom: 32px;
+}
+.single_checkbox_container label {
+  order: 1;
+  padding-left: 12px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+@media (min-width: 1114px) {
+  #root {
+    max-width: 1114px;
+    margin: auto;
+    padding: 0;
+  }
+}
+
+/*# sourceMappingURL=/styles.164d45a1.css.map */

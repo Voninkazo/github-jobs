@@ -1,4 +1,4 @@
-import React, {useReducer, useEffect } from 'react';
+import React, {useReducer, useEffect,useState } from 'react';
 import axios from 'axios';
 
 const GlobalContext = React.createContext();
@@ -6,6 +6,11 @@ const GlobalContext = React.createContext();
 const base_url = 'https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions.json?search=node';
 
 function GlobalContextProvider({children}) {
+    const [jobWithDetail,setJobWithDetail] = useState('');
+function showJobDetail(job) {
+    setJobWithDetail(job)
+}
+
     const [state,dispatch] = useReducer((state,action) => {
         switch(action.type) {
             case "FETCH_SUCCESS":
@@ -30,7 +35,8 @@ function GlobalContextProvider({children}) {
         error: '',
     })
 
-    let {jobsList} = state;
+    let {jobsList} = state
+    console.log(jobsList)
 
     // fetch data from the API
     useEffect(async () => {
@@ -43,10 +49,8 @@ function GlobalContextProvider({children}) {
     }
 },[])
 
-console.log(jobsList)
-
     return(
-        <GlobalContext.Provider value={{state,dispatch}}>
+        <GlobalContext.Provider value={{state,dispatch,jobWithDetail,showJobDetail}}>
             {children}
         </GlobalContext.Provider>
     )
