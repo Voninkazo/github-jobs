@@ -39,14 +39,9 @@ import {GlobalContext} from './GlobalContext';
 import JobsList from './JobsList';
 
 function Main() {
-  const {state,dispatch} = useContext(GlobalContext);
-  const [jobWithDetail,setJobWithDetail] = useState([]);
+  const {state} = useContext(GlobalContext);
   const {jobsList} = state;
   console.log(jobsList)
-
-  function showJobDetail(song) {
-    setJobWithDetail(song)
-  }
 
   return (
     <>
@@ -101,7 +96,7 @@ function Main() {
       {
         jobsList.map(job => {
           return (
-            <JobsList job={job} key={job.id} jobWithDetail={jobWithDetail} showJobDetail={showJobDetail} />
+            <JobsList job={job} key={job.id} />
           )
         })
       }

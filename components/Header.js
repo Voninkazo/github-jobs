@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
+import { GlobalContext } from './GlobalContext';
 
 const FromStyles = styled.form`
     display: flex;
@@ -34,6 +35,19 @@ const FromStyles = styled.form`
 
 export default function Header() {
     const [searchInput,setSearchInput]= useState('');
+    const {state,dispatch} = useContext(GlobalContext);
+    const {jobsList} = state;
+    console.log(jobsList)
+
+    const filteredJobs = jobsList.include(job =>
+         job.title.toLowerCase() === searchInput.toLowerCase() ||
+         job.company.toLowerCase() === searchInput.toLowerCase()
+         )
+
+    function filterByTitle() {
+        dispatch({type:"FILTER_BY_TITLE", newJobArray: filteredJobs})
+    }
+
   return (
     <header>
         <FromStyles>
@@ -43,7 +57,7 @@ export default function Header() {
             onChange={e => setSearchInput(e.target.value)}
             placeholder="Title, companies, expertise or benefits"
             />
-            <button>Search</button>
+            <button type="button" onClick={filterByTitle}>Search</button>
         </FromStyles>
     </header>
   )

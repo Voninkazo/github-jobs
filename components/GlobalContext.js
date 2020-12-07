@@ -7,9 +7,9 @@ const base_url = 'https://cors-anywhere.herokuapp.com/https://jobs.github.com/po
 
 function GlobalContextProvider({children}) {
     const [jobWithDetail,setJobWithDetail] = useState('');
-function showJobDetail(job) {
-    setJobWithDetail(job)
-}
+    function showJobDetail(job) {
+        setJobWithDetail(job)
+    }
 
     const [state,dispatch] = useReducer((state,action) => {
         switch(action.type) {
@@ -24,6 +24,13 @@ function showJobDetail(job) {
                     loading: false,
                     jobsList: [],
                     error : "No data is fetched", 
+                }
+            }
+
+            case "FILTER_BY_TITLE":{
+                return {
+                    ...state,
+                    jobsList: [...state.jobsList, action.newJobArray]
                 }
             }
             default :

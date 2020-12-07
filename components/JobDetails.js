@@ -1,20 +1,13 @@
 import React, { useContext } from 'react';
 import {Link, useParams} from 'react-router-dom';
-import styled from 'styled-components';
+
 import { GlobalContext } from './GlobalContext';
-
-
-const DetailContainer = styled.div`
- display: flex;
- flex-direction: row;
- gap:77px;
-`
 
 function JobDetails() {
     const {id} = useParams;
     const {jobWithDetail} = useContext(GlobalContext);
   return (
-      <DetailContainer>
+      <div className="detail_container">
         <div>
             <Link to="/">
               <p>Go back to search</p>
@@ -42,7 +35,7 @@ function JobDetails() {
               <p>{jobWithDetail.description}</p>
           </div>
           </div>
-      </DetailContainer>
+      </div>
   )
 }
 

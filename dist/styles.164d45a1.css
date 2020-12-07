@@ -44,6 +44,12 @@ ul {
     margin: auto;
     padding: 0;
   }
+
+  div.detail_container {
+    display: flex;
+    flex-direction: row;
+    gap: 77px;
+  }
 }
 
 /*# sourceMappingURL=/styles.164d45a1.css.map */
