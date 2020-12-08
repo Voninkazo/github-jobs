@@ -45,7 +45,7 @@ ul {
     padding: 0;
   }
 
-  div.detail_container {
+  .detail_container {
     display: flex;
     flex-direction: row;
     gap: 77px;

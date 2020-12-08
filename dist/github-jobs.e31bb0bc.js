@@ -35659,17 +35659,12 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 const GlobalContext = _react.default.createContext();
 
 exports.GlobalContext = GlobalContext;
-const base_url = 'https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions.json?search=node';
+const CORS_URL = "https://cors-anywhere.herokuapp.com";
+const API_URL = "https://jobs.github.com";
 
 function GlobalContextProvider({
   children
 }) {
-  const [jobWithDetail, setJobWithDetail] = (0, _react.useState)('');
-
-  function showJobDetail(job) {
-    setJobWithDetail(job);
-  }
-
   const [state, dispatch] = (0, _react.useReducer)((state, action) => {
     switch (action.type) {
       case "FETCH_SUCCESS":
@@ -35688,45 +35683,74 @@ function GlobalContextProvider({
           };
         }
 
-      case "FILTER_BY_TITLE":
+      case "FILTER_BY_KEY_WORDS":
         {
           return { ...state,
-            jobsList: [...state.jobsList, action.newJobArray]
+            jobsList: [...state.jobsList, action.filteredJobs]
+          };
+        }
+
+      case "FILTER_BY_LOCATION":
+        {
+          return { ...state,
+            description: "",
+            location: action.jobsFilteredByLocation
+          };
+        }
+
+      case "FILTER_BY_GIVEN_LOCATION":
+        {
+          return { ...state,
+            description: "",
+            location: action.jobsFilteredByGivenLocation
           };
         }
 
       default:
-        return state;
+        {
+          return state;
+        }
     }
   }, {
     loading: true,
     jobsList: [],
-    error: ''
+    error: '',
+    search: '',
+    description: "python",
+    location: "new york"
   });
   let {
-    jobsList
+    jobsList,
+    location,
+    description
   } = state;
-  console.log(jobsList); // fetch data from the API
+  console.log(jobsList);
 
-  (0, _react.useEffect)(async () => {
+  async function fetchData() {
     try {
-      const response = await (0, _axios.default)(base_url);
+      const response = await (0, _axios.default)(`https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions.json?description=${description}&location=${location}`);
       dispatch({
         type: "FETCH_SUCCESS",
         payload: response.data
       });
-    } catch (err) {
+    } catch (error) {
       dispatch({
         type: "FETCH_ERROR"
       });
     }
+  } // fetch data from the API
+
+
+  (0, _react.useEffect)(() => {
+    fetchData();
   }, []);
+  (0, _react.useEffect)(() => {
+    fetchData();
+  }, [location]);
   return /*#__PURE__*/_react.default.createElement(GlobalContext.Provider, {
     value: {
       state,
-      dispatch,
-      jobWithDetail,
-      showJobDetail
+      dispatch
     }
   }, children);
 }
@@ -37490,11 +37514,11 @@ const FromStyles = _styledComponents.default.form`
         padding: 18px 42px;
         background-color:#1E86FF;
         border: none;
+        outline: none;
     }
 `;
 
 function Header() {
-  const [searchInput, setSearchInput] = (0, _react.useState)('');
   const {
     state,
     dispatch
@@ -37502,27 +37526,12 @@ function Header() {
   const {
     jobsList
   } = state;
-  console.log(jobsList);
-  const filteredJobs = jobsList.include(job => job.title.toLowerCase() === searchInput.toLowerCase() || job.company.toLowerCase() === searchInput.toLowerCase());
-
-  function filterByTitle() {
-    dispatch({
-      type: "FILTER_BY_TITLE",
-      newJobArray: filteredJobs
-    });
-  }
-
   return /*#__PURE__*/_react.default.createElement("header", null, /*#__PURE__*/_react.default.createElement(FromStyles, null, /*#__PURE__*/_react.default.createElement("input", {
     type: "text",
-    value: searchInput,
-    onChange: e => setSearchInput(e.target.value),
     placeholder: "Title, companies, expertise or benefits"
-  }), /*#__PURE__*/_react.default.createElement("button", {
-    type: "button",
-    onClick: filterByTitle
-  }, "Search")));
+  }), /*#__PURE__*/_react.default.createElement("button", null, "Search")));
 }
-},{"react":"node_modules/react/index.js","styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js","./GlobalContext":"components/GlobalContext.js"}],"components/JobsList.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js","./GlobalContext":"components/GlobalContext.js"}],"components/FullTimeJobs.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37530,52 +37539,24 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = _interopRequireWildcard(require("react"));
-
-var _reactRouterDom = require("react-router-dom");
-
-var _styledComponents = _interopRequireDefault(require("styled-components"));
-
-var _GlobalContext = require("./GlobalContext");
+var _react = _interopRequireDefault(require("react"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-const JobListContainerStyles = _styledComponents.default.div`
-    display: flex;
-    flex-direction: column;
-    background: #FFFFFF;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
-    border-radius: 4px;
-    padding: 12px;
-    margin-bottom: 23px;
-    img {
-        width: 90px;
-    }
-`;
-
-function JobsList({
-  job
-}) {
-  const {
-    showJobDetail
-  } = (0, _react.useContext)(_GlobalContext.GlobalContext);
-  return /*#__PURE__*/_react.default.createElement(_reactRouterDom.Link, {
-    to: `/${job.id}`
-  }, /*#__PURE__*/_react.default.createElement(JobListContainerStyles, {
-    onClick: showJobDetail(job)
-  }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("img", {
-    src: job.company_logo,
-    alt: ""
-  }), /*#__PURE__*/_react.default.createElement("ul", null, /*#__PURE__*/_react.default.createElement("li", null, job.company), /*#__PURE__*/_react.default.createElement("li", null, job.title), /*#__PURE__*/_react.default.createElement("li", null, job.type))), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", null, "\uD83C\uDF0E", job.location), /*#__PURE__*/_react.default.createElement("p", null, "\uD83D\uDD50", job.created_at)))));
+function FullTimeJobs() {
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "single_checkbox_container"
+  }, /*#__PURE__*/_react.default.createElement("label", {
+    htmlFor: "checkbox"
+  }, "Full Time"), /*#__PURE__*/_react.default.createElement("input", {
+    type: "checkbox",
+    name: "checkbox"
+  }));
 }
 
-var _default = JobsList;
+var _default = FullTimeJobs;
 exports.default = _default;
-},{"react":"node_modules/react/index.js","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js","styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js","./GlobalContext":"components/GlobalContext.js"}],"components/Main.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js"}],"components/FilterByLocation.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37588,8 +37569,6 @@ var _react = _interopRequireWildcard(require("react"));
 var _styledComponents = _interopRequireDefault(require("styled-components"));
 
 var _GlobalContext = require("./GlobalContext");
-
-var _JobsList = _interopRequireDefault(require("./JobsList"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37630,45 +37609,132 @@ const FormCheckboxes = _styledComponents.default.form`
     }
 `;
 
+function FilterByLocation() {
+  const [jobsByLocation, setJobsByLocation] = (0, _react.useState)('');
+  const [jobsByGivenLocation, setJobsByGivenLocation] = (0, _react.useState)('');
+  const cityArrayExample = ["London", "New York", "Amsterdam", "Berlin"];
+  const {
+    dispatch
+  } = (0, _react.useContext)(_GlobalContext.GlobalContext);
+
+  function filterByLocation(e) {
+    e.preventDefault();
+    dispatch({
+      type: "FILTER_BY_LOCATION",
+      jobsFilteredByLocation: jobsByLocation
+    });
+    setJobsByLocation('');
+  }
+
+  function filterByGivenLocation(e) {
+    setJobsByGivenLocation(e.target.value);
+    e.preventDefault();
+    dispatch({
+      type: "FILTER_BY_GIVEN_LOCATION",
+      jobsFilteredByGivenLocation: jobsByGivenLocation
+    });
+  }
+
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(FormStyles, {
+    onSubmit: filterByLocation
+  }, /*#__PURE__*/_react.default.createElement("label", null, "Location"), /*#__PURE__*/_react.default.createElement("input", {
+    type: "text",
+    value: jobsByLocation,
+    onChange: e => setJobsByLocation(e.target.value),
+    placeholder: "City, state, zip code or country"
+  }), /*#__PURE__*/_react.default.createElement("button", null, "Search")), cityArrayExample.map(city => {
+    return /*#__PURE__*/_react.default.createElement(FormCheckboxes, {
+      onSubmit: filterByGivenLocation
+    }, /*#__PURE__*/_react.default.createElement("label", {
+      htmlFor: city
+    }, /*#__PURE__*/_react.default.createElement("input", {
+      type: "checkbox",
+      name: city,
+      value: city,
+      checked: city === jobsByGivenLocation,
+      onChange: filterByGivenLocation
+    }), /*#__PURE__*/_react.default.createElement("span", null, city)));
+  }));
+}
+
+var _default = FilterByLocation;
+exports.default = _default;
+},{"react":"node_modules/react/index.js","styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js","./GlobalContext":"components/GlobalContext.js"}],"components/JobsList.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _reactRouterDom = require("react-router-dom");
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const JobListContainerStyles = _styledComponents.default.div`
+    display: flex;
+    flex-direction: column;
+    background: #FFFFFF;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 23px;
+    img {
+        width: 90px;
+    }
+`;
+
+function JobsList({
+  job
+}) {
+  return /*#__PURE__*/_react.default.createElement(_reactRouterDom.Link, {
+    to: `/${job.id}`
+  }, /*#__PURE__*/_react.default.createElement(JobListContainerStyles, null, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("img", {
+    src: job.company_logo,
+    alt: ""
+  }), /*#__PURE__*/_react.default.createElement("ul", null, /*#__PURE__*/_react.default.createElement("li", null, job.company), /*#__PURE__*/_react.default.createElement("li", null, job.title), /*#__PURE__*/_react.default.createElement("li", null, job.type))), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", null, "\uD83C\uDF0E", job.location), /*#__PURE__*/_react.default.createElement("p", null, "\uD83D\uDD50", job.created_at)))));
+}
+
+var _default = JobsList;
+exports.default = _default;
+},{"react":"node_modules/react/index.js","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js","styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js"}],"components/Main.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _GlobalContext = require("./GlobalContext");
+
+var _FullTimeJobs = _interopRequireDefault(require("./FullTimeJobs"));
+
+var _FilterByLocation = _interopRequireDefault(require("./FilterByLocation"));
+
+var _JobsList = _interopRequireDefault(require("./JobsList"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
 function Main() {
   const {
-    state
+    state,
+    dispatch
   } = (0, _react.useContext)(_GlobalContext.GlobalContext);
   const {
     jobsList
   } = state;
   console.log(jobsList);
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
-    className: "single_checkbox_container"
-  }, /*#__PURE__*/_react.default.createElement("label", {
-    htmlFor: "checkbox"
-  }, "Full Time"), /*#__PURE__*/_react.default.createElement("input", {
-    type: "checkbox",
-    name: "checkbox"
-  })), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(FormStyles, null, /*#__PURE__*/_react.default.createElement("label", null, "Location"), /*#__PURE__*/_react.default.createElement("input", {
-    type: "text",
-    placeholder: "City, state, zip code or country"
-  }))), /*#__PURE__*/_react.default.createElement(FormCheckboxes, null, /*#__PURE__*/_react.default.createElement("label", {
-    htmlFor: "london"
-  }, /*#__PURE__*/_react.default.createElement("input", {
-    type: "checkbox",
-    name: "london"
-  }), /*#__PURE__*/_react.default.createElement("span", null, "London")), /*#__PURE__*/_react.default.createElement("label", {
-    htmlFor: "amsterdam"
-  }, /*#__PURE__*/_react.default.createElement("input", {
-    type: "checkbox",
-    name: "amsterdam"
-  }), /*#__PURE__*/_react.default.createElement("span", null, "Amsterdam")), /*#__PURE__*/_react.default.createElement("label", {
-    htmlFor: "newyork"
-  }, /*#__PURE__*/_react.default.createElement("input", {
-    type: "checkbox",
-    name: "newyork"
-  }), /*#__PURE__*/_react.default.createElement("span", null, "New York")), /*#__PURE__*/_react.default.createElement("label", {
-    htmlFor: "berlin"
-  }, /*#__PURE__*/_react.default.createElement("input", {
-    type: "checkbox",
-    name: "berlin"
-  }), /*#__PURE__*/_react.default.createElement("span", null, "Berlin"))), jobsList.map(job => {
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_FullTimeJobs.default, null), /*#__PURE__*/_react.default.createElement(_FilterByLocation.default, null), jobsList.map(job => {
     return /*#__PURE__*/_react.default.createElement(_JobsList.default, {
       job: job,
       key: job.id
@@ -37678,7 +37744,7 @@ function Main() {
 
 var _default = Main;
 exports.default = _default;
-},{"react":"node_modules/react/index.js","styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js","./GlobalContext":"components/GlobalContext.js","./JobsList":"components/JobsList.js"}],"components/JobDetails.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","./GlobalContext":"components/GlobalContext.js","./FullTimeJobs":"components/FullTimeJobs.js","./FilterByLocation":"components/FilterByLocation.js","./JobsList":"components/JobsList.js"}],"components/JobDetails.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37690,20 +37756,45 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _reactRouterDom = require("react-router-dom");
 
-var _GlobalContext = require("./GlobalContext");
+var _axios = _interopRequireDefault(require("axios"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function JobDetails() {
+  const [jobWithDetail, setJobWithDetail] = (0, _react.useState)({});
   const {
     id
-  } = _reactRouterDom.useParams;
-  const {
+  } = (0, _reactRouterDom.useParams)();
+  console.log(id);
+  console.log(jobWithDetail);
+
+  async function fetchData() {
+    const response = await (0, _axios.default)(`https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions/${id}.json?markdown=true`);
+    setJobWithDetail(response.data);
+    console.log(response.data);
+  }
+
+  (0, _react.useEffect)(() => {
+    fetchData();
+  }, [id]);
+  const JobDetailsContext = (0, _react.createContext)();
+
+  function JobWithDetailContextProvider({
+    children,
     jobWithDetail
-  } = (0, _react.useContext)(_GlobalContext.GlobalContext);
-  return /*#__PURE__*/_react.default.createElement("div", {
+  }) {
+    return /*#__PURE__*/_react.default.createElement(JobDetailsContext.Provider, {
+      value: {
+        jobWithDetail
+      }
+    }, children);
+  }
+
+  return /*#__PURE__*/_react.default.createElement(JobWithDetailContextProvider, null, /*#__PURE__*/_react.default.createElement("div", {
     className: "detail_container"
   }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_reactRouterDom.Link, {
     to: "/"
@@ -37713,12 +37804,12 @@ function JobDetails() {
     },
     src: jobWithDetail.company_logo,
     alt: "logo"
-  })), /*#__PURE__*/_react.default.createElement("li", null, /*#__PURE__*/_react.default.createElement("p", null, jobWithDetail.location))), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", null, jobWithDetail.description))));
+  })), /*#__PURE__*/_react.default.createElement("li", null, /*#__PURE__*/_react.default.createElement("p", null, jobWithDetail.location))), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", null, jobWithDetail.description)))));
 }
 
 var _default = JobDetails;
 exports.default = _default;
-},{"react":"node_modules/react/index.js","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js","./GlobalContext":"components/GlobalContext.js"}],"App.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js","axios":"node_modules/axios/index.js"}],"App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37790,7 +37881,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54692" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60675" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

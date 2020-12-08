@@ -1,7 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React from 'react';
 import {Link} from 'react-router-dom';
 import styled from 'styled-components';
-import { GlobalContext } from './GlobalContext';
 
 const JobListContainerStyles = styled.div`
     display: flex;
@@ -17,10 +16,9 @@ const JobListContainerStyles = styled.div`
 `
 
 function JobsList({job}) {
-    const {showJobDetail} = useContext(GlobalContext)
   return (
       <Link to={`/${job.id}`}>
-      <JobListContainerStyles onClick={showJobDetail(job)}>
+      <JobListContainerStyles>
         <div>
             <div>
                 <img src={job.company_logo} alt=""/>

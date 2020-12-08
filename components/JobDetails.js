@@ -1,12 +1,37 @@
-import React, { useContext } from 'react';
+import React, {useEffect, useState,createContext } from 'react';
 import {Link, useParams} from 'react-router-dom';
-
-import { GlobalContext } from './GlobalContext';
+import axios from 'axios';
 
 function JobDetails() {
-    const {id} = useParams;
-    const {jobWithDetail} = useContext(GlobalContext);
+  const [jobWithDetail,setJobWithDetail] = useState({});
+    const {id} = useParams();
+    console.log(id)
+    console.log(jobWithDetail)
+
+   async function fetchData() {
+    const response = await axios(`https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions/${id}.json?markdown=true`)
+        setJobWithDetail(response.data)
+        console.log(response.data)
+   }
+
+    useEffect(() => {
+    fetchData()
+    },[id])
+
+    const JobDetailsContext = createContext()
+
+function JobWithDetailContextProvider({ children, jobWithDetail }) {
   return (
+    <JobDetailsContext.Provider
+      value={{ jobWithDetail }}
+    > 
+      {children}  
+    </JobDetailsContext.Provider>
+  )
+}
+
+  return (
+    <JobWithDetailContextProvider>
       <div className="detail_container">
         <div>
             <Link to="/">
@@ -36,6 +61,7 @@ function JobDetails() {
           </div>
           </div>
       </div>
+      </JobWithDetailContextProvider>
   )
 }
 
