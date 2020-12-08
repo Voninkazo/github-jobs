@@ -35656,11 +35656,11 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-const GlobalContext = _react.default.createContext();
+const GlobalContext = _react.default.createContext(); // const CORS_URL = "https://cors-anywhere.herokuapp.com"
+// const API_URL = "https://jobs.github.com";
+
 
 exports.GlobalContext = GlobalContext;
-const CORS_URL = "https://cors-anywhere.herokuapp.com";
-const API_URL = "https://jobs.github.com";
 
 function GlobalContextProvider({
   children
@@ -35683,18 +35683,11 @@ function GlobalContextProvider({
           };
         }
 
-      case "FILTER_BY_KEY_WORDS":
-        {
-          return { ...state,
-            jobsList: [...state.jobsList, action.filteredJobs]
-          };
-        }
-
       case "FILTER_BY_LOCATION":
         {
           return { ...state,
             description: "",
-            location: action.jobsFilteredByLocation
+            location: action.filteredValue
           };
         }
 
@@ -35702,7 +35695,7 @@ function GlobalContextProvider({
         {
           return { ...state,
             description: "",
-            location: action.jobsFilteredByGivenLocation
+            location: action.filteredValue
           };
         }
 
@@ -35717,7 +35710,7 @@ function GlobalContextProvider({
     error: '',
     search: '',
     description: "python",
-    location: "new york"
+    location: ""
   });
   let {
     jobsList,
@@ -37610,8 +37603,8 @@ const FormCheckboxes = _styledComponents.default.form`
 `;
 
 function FilterByLocation() {
-  const [jobsByLocation, setJobsByLocation] = (0, _react.useState)('');
-  const [jobsByGivenLocation, setJobsByGivenLocation] = (0, _react.useState)('');
+  const [filteredJobsByLocation, setFilteredJobsByLocation] = (0, _react.useState)('');
+  const [filteredJobsByGivenLocation, setFilteredJobsByGivenLocation] = (0, _react.useState)('');
   const cityArrayExample = ["London", "New York", "Amsterdam", "Berlin"];
   const {
     dispatch
@@ -37621,17 +37614,17 @@ function FilterByLocation() {
     e.preventDefault();
     dispatch({
       type: "FILTER_BY_LOCATION",
-      jobsFilteredByLocation: jobsByLocation
+      filteredValue: filteredJobsByLocation
     });
-    setJobsByLocation('');
+    setFilteredJobsByLocation('');
   }
 
   function filterByGivenLocation(e) {
-    setJobsByGivenLocation(e.target.value);
+    setFilteredJobsByGivenLocation(e.target.value);
     e.preventDefault();
     dispatch({
       type: "FILTER_BY_GIVEN_LOCATION",
-      jobsFilteredByGivenLocation: jobsByGivenLocation
+      filteredValue: filteredJobsByGivenLocation
     });
   }
 
@@ -37639,8 +37632,8 @@ function FilterByLocation() {
     onSubmit: filterByLocation
   }, /*#__PURE__*/_react.default.createElement("label", null, "Location"), /*#__PURE__*/_react.default.createElement("input", {
     type: "text",
-    value: jobsByLocation,
-    onChange: e => setJobsByLocation(e.target.value),
+    value: filteredJobsByLocation,
+    onChange: e => setFilteredJobsByLocation(e.target.value),
     placeholder: "City, state, zip code or country"
   }), /*#__PURE__*/_react.default.createElement("button", null, "Search")), cityArrayExample.map(city => {
     return /*#__PURE__*/_react.default.createElement(FormCheckboxes, {
@@ -37651,7 +37644,7 @@ function FilterByLocation() {
       type: "checkbox",
       name: city,
       value: city,
-      checked: city === jobsByGivenLocation,
+      checked: city === filteredJobsByGivenLocation,
       onChange: filterByGivenLocation
     }), /*#__PURE__*/_react.default.createElement("span", null, city)));
   }));

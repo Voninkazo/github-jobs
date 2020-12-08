@@ -1,16 +1,12 @@
-import React, {useReducer, useEffect,useState } from 'react';
+import React, {useReducer, useEffect } from 'react';
 import axios from 'axios';
 
 const GlobalContext = React.createContext();
 
-const base_url = 'https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions.json?search=node';
+// const CORS_URL = "https://cors-anywhere.herokuapp.com"
+// const API_URL = "https://jobs.github.com";
 
 function GlobalContextProvider({children}) {
-    const [jobWithDetail,setJobWithDetail] = useState('');
-    function showJobDetail(job) {
-        setJobWithDetail(job)
-    }
-
     const [state,dispatch] = useReducer((state,action) => {
         switch(action.type) {
             case "FETCH_SUCCESS":
@@ -27,37 +23,58 @@ function GlobalContextProvider({children}) {
                 }
             }
 
-            case "FILTER_BY_TITLE":{
+            case "FILTER_BY_LOCATION":{
                 return {
                     ...state,
-                    jobsList: [...state.jobsList, action.newJobArray]
+                    description: "",
+                    location: action.filteredValue
                 }
             }
-            default :
-            return state
+
+            case "FILTER_BY_GIVEN_LOCATION":{
+                return {
+                    ...state,
+                    description: "",
+                    location: action.filteredValue
+                }
+            }
+            default : {
+                return state
+            }
         }
     }, {
         loading:true,
         jobsList: [],
         error: '',
+        search: '',
+        description:"python",
+        location: ""
     })
 
-    let {jobsList} = state
+    let {jobsList,location,description} = state
     console.log(jobsList)
 
-    // fetch data from the API
-    useEffect(async () => {
+  async function fetchData() {
         try {
-       const response = await axios(base_url)
-           dispatch({type: "FETCH_SUCCESS", payload: response.data})
-       }
-       catch (err) {
-        dispatch({type:"FETCH_ERROR"})
+            const response = await axios(`https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions.json?description=${description}&location=${location}`);
+                dispatch({type: "FETCH_SUCCESS", payload: response.data})
+            }
+            catch (error) {
+             dispatch({type:"FETCH_ERROR"})
+         }
     }
+
+   // fetch data from the API
+    useEffect(() => {
+        fetchData();
 },[])
 
+useEffect(() => {
+    fetchData();
+},[location])
+
     return(
-        <GlobalContext.Provider value={{state,dispatch,jobWithDetail,showJobDetail}}>
+        <GlobalContext.Provider value={{state,dispatch}}>
             {children}
         </GlobalContext.Provider>
     )

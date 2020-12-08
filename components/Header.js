@@ -30,34 +30,22 @@ const FromStyles = styled.form`
         padding: 18px 42px;
         background-color:#1E86FF;
         border: none;
+        outline: none;
     }
 `
 
 export default function Header() {
-    const [searchInput,setSearchInput]= useState('');
     const {state,dispatch} = useContext(GlobalContext);
     const {jobsList} = state;
-    console.log(jobsList)
-
-    const filteredJobs = jobsList.include(job =>
-         job.title.toLowerCase() === searchInput.toLowerCase() ||
-         job.company.toLowerCase() === searchInput.toLowerCase()
-         )
-
-    function filterByTitle() {
-        dispatch({type:"FILTER_BY_TITLE", newJobArray: filteredJobs})
-    }
 
   return (
     <header>
         <FromStyles>
             <input 
             type="text" 
-            value={searchInput} 
-            onChange={e => setSearchInput(e.target.value)}
             placeholder="Title, companies, expertise or benefits"
             />
-            <button type="button" onClick={filterByTitle}>Search</button>
+            <button>Search</button>
         </FromStyles>
     </header>
   )
