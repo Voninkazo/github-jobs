@@ -35,15 +35,24 @@ const FromStyles = styled.form`
 `
 
 export default function Header() {
-    const {state,dispatch} = useContext(GlobalContext);
-    const {jobsList} = state;
+    const {dispatch} = useContext(GlobalContext);
+    const [keyWords,setKeyWords] = useState('');
+
+    function searchJobByKeyWords(e) {
+        e.preventDefault();
+        dispatch({type:"SEARCH_BY_KEY_WORDS", foundValues: keyWords});
+        setKeyWords('');
+        console.log(keyWords)
+    }
 
   return (
     <header>
-        <FromStyles>
+        <FromStyles onSubmit={searchJobByKeyWords}>
             <input 
             type="text" 
             placeholder="Title, companies, expertise or benefits"
+            value={keyWords}
+            onChange={e => setKeyWords(e.target.value)}
             />
             <button>Search</button>
         </FromStyles>

@@ -6,9 +6,9 @@ import FilterByLocation from './FilterByLocation';
 import JobsList from './JobsList';
 
 function Main() {
-  const {state,dispatch} = useContext(GlobalContext);
+  const {state} = useContext(GlobalContext);
   const {jobsList} = state;
-  console.log(jobsList)
+  // console.log(jobsList)
 
   return (
     <>

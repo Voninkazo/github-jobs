@@ -1,5 +1,6 @@
 import React, {useReducer, useEffect } from 'react';
 import axios from 'axios';
+import JobsList from './JobsList';
 
 const GlobalContext = React.createContext();
 
@@ -23,11 +24,19 @@ function GlobalContextProvider({children}) {
                 }
             }
 
+            case "SEARCH_BY_KEY_WORDS": {
+                return {
+                    ...state,
+                    search: action.foundValues,
+                    description: '',
+                }
+            }
+
             case "FILTER_BY_LOCATION":{
                 return {
                     ...state,
                     description: "",
-                    location: action.filteredValue
+                    location: action.filteredValue,
                 }
             }
 
@@ -35,9 +44,19 @@ function GlobalContextProvider({children}) {
                 return {
                     ...state,
                     description: "",
-                    location: action.filteredValue
+                    location: action.filteredValue,
                 }
             }
+
+            case "FILTER_BY_FULL_TIME_JOB": {
+                return {
+                    ...state,
+                    description: '',
+                    location: '',
+                    full_time: action.filteredValues,
+                }
+            }
+
             default : {
                 return state
             }
@@ -48,11 +67,13 @@ function GlobalContextProvider({children}) {
         error: '',
         search: '',
         description:"python",
-        location: ""
+        location: "",
+        full_time:false,
+        search: "node",
     })
 
-    let {jobsList,location,description} = state
-    console.log(jobsList)
+    let {jobsList,location,description,full_time,search} = state
+    // console.log(jobsList)
 
   async function fetchData() {
         try {
@@ -64,14 +85,42 @@ function GlobalContextProvider({children}) {
          }
     }
 
+    async function fetchFullTimeJobs() {
+        try {
+            const response = await axios(`https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions.json?description=${description}&full_time=${full_time}&location=${location}`);
+                dispatch({type: "FETCH_SUCCESS", payload: response.data})
+            }
+            catch (error) {
+             dispatch({type:"FETCH_ERROR"})
+         }
+    }
+
+    async function fetchToGetDataFilteredByKeyWords() {
+        try {
+            const response = await axios(`https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions.json?search=${search}`);
+                dispatch({type: "FETCH_SUCCESS", payload: response.data})
+            }
+            catch (error) {
+             dispatch({type:"FETCH_ERROR"})
+         }
+    }
+
    // fetch data from the API
     useEffect(() => {
         fetchData();
-},[])
+    },[])
 
-useEffect(() => {
-    fetchData();
-},[location])
+    useEffect(() =>{
+        fetchToGetDataFilteredByKeyWords();
+    },[search])
+
+    useEffect(() => {
+        fetchData();
+    },[location])
+
+    useEffect(() => {
+        fetchFullTimeJobs();
+    },[full_time])
 
     return(
         <GlobalContext.Provider value={{state,dispatch}}>

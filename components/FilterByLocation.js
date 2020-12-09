@@ -78,7 +78,7 @@ function FilterByLocation() {
               type="checkbox" 
               name={city}
               value={city}
-              checked={city === filteredJobsByGivenLocation}
+              checked={city.toLocaleLowerCase().trim() === filteredJobsByGivenLocation.toLocaleLowerCase().trim()}
               onChange={filterByGivenLocation}
               />
               <span>{city}</span>

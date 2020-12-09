@@ -5,13 +5,13 @@ import axios from 'axios';
 function JobDetails() {
   const [jobWithDetail,setJobWithDetail] = useState({});
     const {id} = useParams();
-    console.log(id)
-    console.log(jobWithDetail)
+    // console.log(id)
+    // console.log(jobWithDetail)
 
    async function fetchData() {
     const response = await axios(`https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions/${id}.json?markdown=true`)
         setJobWithDetail(response.data)
-        console.log(response.data)
+        // console.log(response.data)
    }
 
     useEffect(() => {
