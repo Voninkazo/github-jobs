@@ -5,8 +5,8 @@ import {GlobalContext} from './GlobalContext';
 
 function FullTimeJobs() {
   const {state,dispatch} = useContext(GlobalContext);
-  // const {full_time} = state;
-  const [isFullTimeJobChosen,setIsFullTimeJobChecked] = useState(false);
+  const {full_time} = state;
+  const [isFullTimeJobChosen,setIsFullTimeJobChecked] = useState(full_time);
 
   function findAllFullTimeJobs(e) {
     setIsFullTimeJobChecked(!isFullTimeJobChosen)

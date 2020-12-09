@@ -3,18 +3,25 @@ import styled from 'styled-components';
 
 import { GlobalContext } from './GlobalContext';
 import FormStyles from './Styles';
+import IconGlobe from '../icons/globe.svg';
 
 const FormCheckboxes = styled.form`
     display: flex;
     flex-direction: column;
     padding-top:25px;
     padding-bottom: 25px;
+    input {
+      background-image: url(${IconGlobe});
+      background-repeat:no-repeat;
+      background-size: cover;
+      background-position: center;
+    }
     label {
       margin-bottom: 15px;
+    }
       span {
         padding-left: 12px;
       }
-    }
 `
 
 function FilterByLocation() {
@@ -56,9 +63,10 @@ function FilterByLocation() {
               <label htmlFor={city}>
               <input 
               type="checkbox" 
+              id={city}
               name={city}
               value={city}
-              checked={city.toLocaleLowerCase().trim() === filteredJobsByGivenLocation.toLocaleLowerCase().trim()}
+              checked={city === filteredJobsByGivenLocation}
               onChange={filterByGivenLocation}
               />
               <span>{city}</span>

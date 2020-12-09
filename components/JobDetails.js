@@ -9,7 +9,7 @@ function JobDetails() {
     const {id} = useParams();
 
    async function fetchData() {
-    const response = await axios(`https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions/${id}.json?markdown=true`)
+    const response = await axios(`https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions/${id}.json`)
         setJobWithDetail(response.data)
    }
 
@@ -52,7 +52,7 @@ function JobWithDetailContextProvider({ children, jobWithDetail }) {
               </div>
             </Link>
             <h3>How to aplly</h3>
-            <a className="how_to_apply" href={`mailto${jobWithDetail.how_to_apply}`}>{jobWithDetail.how_to_apply}</a>
+            <p className="how_to_apply" dangerouslySetInnerHTML={{ __html:jobWithDetail.how_to_apply}} />
         </div>
           <div>
             <ul>
@@ -72,7 +72,7 @@ function JobWithDetailContextProvider({ children, jobWithDetail }) {
               </li>
             </ul>
             <div>
-              <p className="description_article">{jobWithDetail.description}</p>
+              <p className="description_article" dangerouslySetInnerHTML={{__html: jobWithDetail.description}} />
           </div>
           </div>
       </div>

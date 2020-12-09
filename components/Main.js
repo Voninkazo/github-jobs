@@ -7,7 +7,7 @@ import JobsList from './JobsList';
 
 function Main() {
   const {state} = useContext(GlobalContext);
-  const {jobsList} = state;
+  const {jobsList,loading} = state;
   // console.log(jobsList)
 
   return (
@@ -17,12 +17,13 @@ function Main() {
         <FilterByLocation />
       </section>
       <section>
-      {
-        jobsList.map(job => {
-          return (
-            <JobsList job={job} key={job.id} />
-          )
-        })
+      {loading ? <p>Loading...</p>
+      :
+      jobsList.map(job => {
+        return (
+          <JobsList job={job} key={job.id} />
+        )
+      })
       }
       </section>
     </main>

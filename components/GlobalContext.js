@@ -66,10 +66,10 @@ function GlobalContextProvider({children}) {
         jobsList: [],
         error: '',
         search: '',
-        description:"python",
+        description:"",
         location: "",
         full_time:false,
-        search: "node",
+        search: "",
     })
 
     let {jobsList,location,description,full_time,search} = state
@@ -87,7 +87,7 @@ function GlobalContextProvider({children}) {
 
     async function fetchFullTimeJobs() {
         try {
-            const response = await axios(`https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions.json?description=${description}&full_time=${full_time}&location=${location}`);
+            const response = await axios(`https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions.json?full_time=${full_time}`);
                 dispatch({type: "FETCH_SUCCESS", payload: response.data})
             }
             catch (error) {
@@ -116,11 +116,7 @@ function GlobalContextProvider({children}) {
 
     useEffect(() => {
         fetchData();
-    },[description])
-
-    useEffect(() => {
-        fetchData();
-    },[location])
+    },[location,description])
 
     useEffect(() => {
         fetchFullTimeJobs();

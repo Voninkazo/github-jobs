@@ -37505,10 +37505,10 @@ function GlobalContextProvider({
     jobsList: [],
     error: '',
     search: '',
-    description: "python",
+    description: "",
     location: "",
     full_time: false,
-    search: "node"
+    search: ""
   });
   let {
     jobsList,
@@ -37534,7 +37534,7 @@ function GlobalContextProvider({
 
   async function fetchFullTimeJobs() {
     try {
-      const response = await (0, _axios.default)(`https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions.json?description=${description}&full_time=${full_time}&location=${location}`);
+      const response = await (0, _axios.default)(`https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions.json?full_time=${full_time}`);
       dispatch({
         type: "FETCH_SUCCESS",
         payload: response.data
@@ -37569,10 +37569,7 @@ function GlobalContextProvider({
   }, [search]);
   (0, _react.useEffect)(() => {
     fetchData();
-  }, [description]);
-  (0, _react.useEffect)(() => {
-    fetchData();
-  }, [location]);
+  }, [location, description]);
   (0, _react.useEffect)(() => {
     fetchFullTimeJobs();
   }, [full_time]);
@@ -37635,9 +37632,11 @@ function FullTimeJobs() {
   const {
     state,
     dispatch
-  } = (0, _react.useContext)(_GlobalContext.GlobalContext); // const {full_time} = state;
-
-  const [isFullTimeJobChosen, setIsFullTimeJobChecked] = (0, _react.useState)(false);
+  } = (0, _react.useContext)(_GlobalContext.GlobalContext);
+  const {
+    full_time
+  } = state;
+  const [isFullTimeJobChosen, setIsFullTimeJobChecked] = (0, _react.useState)(full_time);
 
   function findAllFullTimeJobs(e) {
     setIsFullTimeJobChecked(!isFullTimeJobChosen);
@@ -37706,7 +37705,9 @@ const FormStyles = _styledComponents.default.form`
 `;
 var _default = FormStyles;
 exports.default = _default;
-},{"styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js"}],"components/FilterByLocation.js":[function(require,module,exports) {
+},{"styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js"}],"icons/globe.svg":[function(require,module,exports) {
+module.exports = "/globe.30c93107.svg";
+},{}],"components/FilterByLocation.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37722,6 +37723,8 @@ var _GlobalContext = require("./GlobalContext");
 
 var _Styles = _interopRequireDefault(require("./Styles"));
 
+var _globe = _interopRequireDefault(require("../icons/globe.svg"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
@@ -37733,12 +37736,18 @@ const FormCheckboxes = _styledComponents.default.form`
     flex-direction: column;
     padding-top:25px;
     padding-bottom: 25px;
+    input {
+      background-image: url(${_globe.default});
+      background-repeat:no-repeat;
+      background-size: cover;
+      background-position: center;
+    }
     label {
       margin-bottom: 15px;
+    }
       span {
         padding-left: 12px;
       }
-    }
 `;
 
 function FilterByLocation() {
@@ -37781,9 +37790,10 @@ function FilterByLocation() {
       htmlFor: city
     }, /*#__PURE__*/_react.default.createElement("input", {
       type: "checkbox",
+      id: city,
       name: city,
       value: city,
-      checked: city.toLocaleLowerCase().trim() === filteredJobsByGivenLocation.toLocaleLowerCase().trim(),
+      checked: city === filteredJobsByGivenLocation,
       onChange: filterByGivenLocation
     }), /*#__PURE__*/_react.default.createElement("span", null, city)));
   }));
@@ -37791,7 +37801,7 @@ function FilterByLocation() {
 
 var _default = FilterByLocation;
 exports.default = _default;
-},{"react":"node_modules/react/index.js","styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js","./GlobalContext":"components/GlobalContext.js","./Styles":"components/Styles.js"}],"components/Main.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js","./GlobalContext":"components/GlobalContext.js","./Styles":"components/Styles.js","../icons/globe.svg":"icons/globe.svg"}],"components/Main.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37820,10 +37830,11 @@ function Main() {
     state
   } = (0, _react.useContext)(_GlobalContext.GlobalContext);
   const {
-    jobsList
+    jobsList,
+    loading
   } = state; // console.log(jobsList)
 
-  return /*#__PURE__*/_react.default.createElement("main", null, /*#__PURE__*/_react.default.createElement("section", null, /*#__PURE__*/_react.default.createElement(_FullTimeJobs.default, null), /*#__PURE__*/_react.default.createElement(_FilterByLocation.default, null)), /*#__PURE__*/_react.default.createElement("section", null, jobsList.map(job => {
+  return /*#__PURE__*/_react.default.createElement("main", null, /*#__PURE__*/_react.default.createElement("section", null, /*#__PURE__*/_react.default.createElement(_FullTimeJobs.default, null), /*#__PURE__*/_react.default.createElement(_FilterByLocation.default, null)), /*#__PURE__*/_react.default.createElement("section", null, loading ? /*#__PURE__*/_react.default.createElement("p", null, "Loading...") : jobsList.map(job => {
     return /*#__PURE__*/_react.default.createElement(_JobsList.default, {
       job: job,
       key: job.id
@@ -37864,7 +37875,7 @@ function JobDetails() {
   } = (0, _reactRouterDom.useParams)();
 
   async function fetchData() {
-    const response = await (0, _axios.default)(`https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions/${id}.json?markdown=true`);
+    const response = await (0, _axios.default)(`https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions/${id}.json`);
     setJobWithDetail(response.data);
   }
 
@@ -37906,10 +37917,12 @@ function JobDetails() {
     alt: "go back"
   }), /*#__PURE__*/_react.default.createElement("p", {
     className: "home_link"
-  }, "Go back to search"))), /*#__PURE__*/_react.default.createElement("h3", null, "How to aplly"), /*#__PURE__*/_react.default.createElement("a", {
+  }, "Go back to search"))), /*#__PURE__*/_react.default.createElement("h3", null, "How to aplly"), /*#__PURE__*/_react.default.createElement("p", {
     className: "how_to_apply",
-    href: `mailto${jobWithDetail.how_to_apply}`
-  }, jobWithDetail.how_to_apply)), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("ul", null, /*#__PURE__*/_react.default.createElement("li", {
+    dangerouslySetInnerHTML: {
+      __html: jobWithDetail.how_to_apply
+    }
+  })), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("ul", null, /*#__PURE__*/_react.default.createElement("li", {
     className: "sub_container"
   }, /*#__PURE__*/_react.default.createElement("p", {
     className: "job_detail_title"
@@ -37929,8 +37942,11 @@ function JobDetails() {
   }, jobWithDetail.company), /*#__PURE__*/_react.default.createElement("p", {
     className: "job_location"
   }, "\uD83C\uDF0F", jobWithDetail.location))), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", {
-    className: "description_article"
-  }, jobWithDetail.description)))));
+    className: "description_article",
+    dangerouslySetInnerHTML: {
+      __html: jobWithDetail.description
+    }
+  })))));
 }
 
 var _default = JobDetails;

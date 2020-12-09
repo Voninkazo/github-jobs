@@ -112,6 +112,8 @@ h3 {
   font-weight: normal;
   font-size: 16px;
   line-height: 19px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
 .job_type {
@@ -175,6 +177,7 @@ h3 {
 .homepage_link_container {
   display: flex;
   flex-direction: row;
+  white-space: nowrap;
 }
 .homepage_link_container p {
   margin-left: 15px;
@@ -191,7 +194,6 @@ h3 {
   .detail_container {
     display: flex;
     flex-direction: row;
-    align-items: baseline;
     gap: 77px;
   }
   .detail_container .sub_container {
@@ -220,6 +222,11 @@ h3 {
   .form_container form {
     max-width: 790px;
     margin: auto;
+  }
+
+  .job_title {
+    font-size: 18px;
+    line-height: 21px;
   }
 }
 
