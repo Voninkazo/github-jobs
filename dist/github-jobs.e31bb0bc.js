@@ -37465,6 +37465,7 @@ function GlobalContextProvider({
       case "SEARCH_BY_KEY_WORDS":
         {
           return { ...state,
+            loading: false,
             search: action.foundValues,
             description: ''
           };
@@ -37474,6 +37475,7 @@ function GlobalContextProvider({
         {
           return { ...state,
             description: "",
+            loading: false,
             location: action.filteredValue
           };
         }
@@ -37482,7 +37484,8 @@ function GlobalContextProvider({
         {
           return { ...state,
             description: "",
-            location: action.filteredValue
+            location: action.filteredValue,
+            loading: false
           };
         }
 
@@ -37491,6 +37494,7 @@ function GlobalContextProvider({
           return { ...state,
             description: '',
             location: '',
+            loading: false,
             full_time: action.filteredValues
           };
         }
@@ -37786,7 +37790,9 @@ function FilterByLocation() {
     onChange: e => setFilteredJobsByLocation(e.target.value),
     placeholder: "City, state, zip code or country"
   }), /*#__PURE__*/_react.default.createElement("button", null, "Search")), cityArrayExample.map(city => {
-    return /*#__PURE__*/_react.default.createElement(FormCheckboxes, null, /*#__PURE__*/_react.default.createElement("label", {
+    return /*#__PURE__*/_react.default.createElement(FormCheckboxes, {
+      key: city
+    }, /*#__PURE__*/_react.default.createElement("label", {
       htmlFor: city
     }, /*#__PURE__*/_react.default.createElement("input", {
       type: "checkbox",
@@ -37906,7 +37912,7 @@ function JobDetails() {
     }, children);
   }
 
-  return /*#__PURE__*/_react.default.createElement(JobWithDetailContextProvider, null, /*#__PURE__*/_react.default.createElement("div", {
+  return /*#__PURE__*/_react.default.createElement(JobWithDetailContextProvider, null, !jobWithDetail ? /*#__PURE__*/_react.default.createElement("p", null, "Loading...") : /*#__PURE__*/_react.default.createElement("div", {
     className: "detail_container"
   }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_reactRouterDom.Link, {
     to: "/"

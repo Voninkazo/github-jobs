@@ -59,7 +59,7 @@ function FilterByLocation() {
       {
         cityArrayExample.map(city => {
           return (
-            <FormCheckboxes>
+            <FormCheckboxes key={city}>
               <label htmlFor={city}>
               <input 
               type="checkbox" 

@@ -43,6 +43,8 @@ function JobWithDetailContextProvider({ children, jobWithDetail }) {
 
   return (
     <JobWithDetailContextProvider>
+      {!jobWithDetail ? <p>Loading...</p>
+      :
       <div className="detail_container">
         <div>
             <Link to="/">
@@ -76,6 +78,8 @@ function JobWithDetailContextProvider({ children, jobWithDetail }) {
           </div>
           </div>
       </div>
+
+      }
       </JobWithDetailContextProvider>
   )
 }

@@ -27,6 +27,7 @@ function GlobalContextProvider({children}) {
             case "SEARCH_BY_KEY_WORDS": {
                 return {
                     ...state,
+                    loading:false,
                     search: action.foundValues,
                     description: '',
                 }
@@ -36,6 +37,7 @@ function GlobalContextProvider({children}) {
                 return {
                     ...state,
                     description: "",
+                    loading:false,
                     location: action.filteredValue,
                 }
             }
@@ -45,6 +47,7 @@ function GlobalContextProvider({children}) {
                     ...state,
                     description: "",
                     location: action.filteredValue,
+                    loading:false,
                 }
             }
 
@@ -53,6 +56,7 @@ function GlobalContextProvider({children}) {
                     ...state,
                     description: '',
                     location: '',
+                    loading:false,
                     full_time: action.filteredValues,
                 }
             }
