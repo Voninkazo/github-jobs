@@ -19,6 +19,18 @@ function JobDetails() {
 
     const JobDetailsContext = createContext()
 
+    const getUTCDate = new Date(`${jobWithDetail.created_at}`)
+    const getTime = getUTCDate.getTime();
+    const actualTime = Date.now();
+    const differenceBetweenTimes = actualTime - getTime;
+    let differenceBetweenDate = Math.round(differenceBetweenTimes / (1000 * 60 * 60 * 24))
+
+    if (differenceBetweenDate < 1) {
+        differenceBetweenDate = Math.round(differenceBetweenTimes / (1000 * 60 * 60 * 24) + `hours ago`)
+    } else {
+        differenceBetweenDate = differenceBetweenDate === 1 ? differenceBetweenDate + "day ago" : differenceBetweenDate + "days ago"
+    }
+
 function JobWithDetailContextProvider({ children, jobWithDetail }) {
   return (
     <JobDetailsContext.Provider
@@ -49,7 +61,7 @@ function JobWithDetailContextProvider({ children, jobWithDetail }) {
                   <span className="job_type">{jobWithDetail.type}</span>
                 </li>
                 <li className="created_date">
-                  🕐{jobWithDetail.created_at}
+                  🕐{differenceBetweenDate}
                 </li>
             </ul>
             <ul>

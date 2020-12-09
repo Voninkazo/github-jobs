@@ -4,7 +4,7 @@ import FilterByKeyWords from './FilterByKeyWords';
 
 function Masthead() {
   return (
-    <FilterByKeyWords />
+     <FilterByKeyWords />
   )
 }
 

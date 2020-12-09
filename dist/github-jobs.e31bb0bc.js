@@ -37382,6 +37382,18 @@ const JobListContainerStyles = _styledComponents.default.div`
 function JobsList({
   job
 }) {
+  const getUTCDate = new Date(`${job.created_at}`);
+  const getTime = getUTCDate.getTime();
+  const actualTime = Date.now();
+  const differenceBetweenTimes = actualTime - getTime;
+  let differenceBetweenDate = Math.round(differenceBetweenTimes / (1000 * 60 * 60 * 24));
+
+  if (differenceBetweenDate < 1) {
+    differenceBetweenDate = Math.round(differenceBetweenTimes / (1000 * 60 * 60 * 24) + `hours ago`);
+  } else {
+    differenceBetweenDate = differenceBetweenDate === 1 ? differenceBetweenDate + "day ago" : differenceBetweenDate + "days ago";
+  }
+
   return /*#__PURE__*/_react.default.createElement(_reactRouterDom.Link, {
     to: `/${job.id}`
   }, /*#__PURE__*/_react.default.createElement(JobListContainerStyles, null, /*#__PURE__*/_react.default.createElement("div", {
@@ -37397,7 +37409,7 @@ function JobsList({
     className: "job_type"
   }, job.type))), /*#__PURE__*/_react.default.createElement("div", {
     className: "time_content"
-  }, /*#__PURE__*/_react.default.createElement("p", null, "\uD83C\uDF0E", job.location), /*#__PURE__*/_react.default.createElement("p", null, "\uD83D\uDD50", job.created_at)))));
+  }, /*#__PURE__*/_react.default.createElement("p", null, "\uD83C\uDF0E", job.location), /*#__PURE__*/_react.default.createElement("p", null, "\uD83D\uDD50", differenceBetweenDate)))));
 }
 
 var _default = JobsList;
@@ -37860,6 +37872,17 @@ function JobDetails() {
     fetchData();
   }, [id]);
   const JobDetailsContext = (0, _react.createContext)();
+  const getUTCDate = new Date(`${jobWithDetail.created_at}`);
+  const getTime = getUTCDate.getTime();
+  const actualTime = Date.now();
+  const differenceBetweenTimes = actualTime - getTime;
+  let differenceBetweenDate = Math.round(differenceBetweenTimes / (1000 * 60 * 60 * 24));
+
+  if (differenceBetweenDate < 1) {
+    differenceBetweenDate = Math.round(differenceBetweenTimes / (1000 * 60 * 60 * 24) + `hours ago`);
+  } else {
+    differenceBetweenDate = differenceBetweenDate === 1 ? differenceBetweenDate + "day ago" : differenceBetweenDate + "days ago";
+  }
 
   function JobWithDetailContextProvider({
     children,
@@ -37894,7 +37917,7 @@ function JobDetails() {
     className: "job_type"
   }, jobWithDetail.type)), /*#__PURE__*/_react.default.createElement("li", {
     className: "created_date"
-  }, "\uD83D\uDD50", jobWithDetail.created_at)), /*#__PURE__*/_react.default.createElement("ul", null, /*#__PURE__*/_react.default.createElement("li", null, /*#__PURE__*/_react.default.createElement("img", {
+  }, "\uD83D\uDD50", differenceBetweenDate)), /*#__PURE__*/_react.default.createElement("ul", null, /*#__PURE__*/_react.default.createElement("li", null, /*#__PURE__*/_react.default.createElement("img", {
     style: {
       width: "42px",
       height: "42px"

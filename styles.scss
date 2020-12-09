@@ -39,6 +39,11 @@ h3 {
     background-repeat: no-repeat;
     background-position: 94%;
     background-size: cover;
+    form {
+        max-width: 315px;
+        margin: auto;
+        width: 100%;
+    }
 }
 
 .single_checkbox_container {
@@ -213,5 +218,11 @@ h3 {
     }
     .single_checkbox_container {
         padding-top: 0;
+    }
+    .form_container {
+        form {
+            max-width: 790px;
+            margin: auto;
+        }
     }
 }

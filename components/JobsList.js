@@ -16,6 +16,17 @@ const JobListContainerStyles = styled.div`
     }
 `
 function JobsList({job}) {
+    const getUTCDate = new Date(`${job.created_at}`)
+    const getTime = getUTCDate.getTime();
+    const actualTime = Date.now();
+    const differenceBetweenTimes = actualTime - getTime;
+    let differenceBetweenDate = Math.round(differenceBetweenTimes / (1000 * 60 * 60 * 24))
+
+    if (differenceBetweenDate < 1) {
+        differenceBetweenDate = Math.round(differenceBetweenTimes / (1000 * 60 * 60 * 24) + `hours ago`)
+    } else {
+        differenceBetweenDate = differenceBetweenDate === 1 ? differenceBetweenDate + "day ago" : differenceBetweenDate + "days ago"
+    }
   return (
       <Link to={`/${job.id}`}>
       <JobListContainerStyles>
@@ -30,7 +41,7 @@ function JobsList({job}) {
             </div>
             <div className="time_content">
                 <p>🌎{job.location}</p>
-                <p>🕐{job.created_at}</p>
+                <p>🕐{differenceBetweenDate}</p>
             </div>
          </div>
       </JobListContainerStyles>
