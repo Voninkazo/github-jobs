@@ -2,27 +2,7 @@ import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 
 import { GlobalContext } from './GlobalContext';
-
-const FormStyles = styled.form`
-  display: flex;
-  flex-direction: column;
-  input {
-    font-size: 12px;
-    line-height: 14px;
-    padding: 17px;
-    background-color: #ffffff;
-    outline: none;
-    border:none;
-  }
-  label {
-    font-size: 14px;
-    line-height: 21px;
-    text-transform: uppercase;
-    color: #B9BDCF;
-    margin-bottom:14px;
-    font-weight: bold;
-  }
-`
+import FormStyles from './Styles';
 
 const FormCheckboxes = styled.form`
     display: flex;
@@ -59,8 +39,8 @@ function FilterByLocation() {
 
   return (
     <>
+    <p className="location_label">Location</p>
     <FormStyles onSubmit={filterByLocation}>
-        <label>Location</label>
         <input
         type="text"
         value={filteredJobsByLocation}
@@ -72,7 +52,7 @@ function FilterByLocation() {
       {
         cityArrayExample.map(city => {
           return (
-            <FormCheckboxes onSubmit={filterByGivenLocation}>
+            <FormCheckboxes>
               <label htmlFor={city}>
               <input 
               type="checkbox" 

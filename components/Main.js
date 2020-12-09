@@ -11,9 +11,12 @@ function Main() {
   // console.log(jobsList)
 
   return (
-    <>
-      <FullTimeJobs />
-      <FilterByLocation />
+    <main>
+      <section>
+        <FullTimeJobs />
+        <FilterByLocation />
+      </section>
+      <section>
       {
         jobsList.map(job => {
           return (
@@ -21,7 +24,8 @@ function Main() {
           )
         })
       }
-    </>
+      </section>
+    </main>
   )
 }
 

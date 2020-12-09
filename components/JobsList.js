@@ -12,23 +12,23 @@ const JobListContainerStyles = styled.div`
     margin-bottom: 23px;
     img {
         width: 90px;
+        height: 90px;
     }
 `
-
 function JobsList({job}) {
   return (
       <Link to={`/${job.id}`}>
       <JobListContainerStyles>
-        <div>
+        <div className="content">
             <div>
                 <img src={job.company_logo} alt=""/>
                 <ul>
-                    <li>{job.company}</li>
-                    <li>{job.title}</li>
-                    <li>{job.type}</li>
+                    <li className="company_name">{job.company}</li>
+                    <li className="job_title">{job.title}</li>
+                    <li className="job_type">{job.type}</li>
                 </ul>
             </div>
-            <div>
+            <div className="time_content">
                 <p>🌎{job.location}</p>
                 <p>🕐{job.created_at}</p>
             </div>

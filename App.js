@@ -4,14 +4,15 @@ import { Route, Switch } from 'react-router';
 import Header from './components/Header';
 import Main from './components/Main';
 import JobDetails from './components/JobDetails';
+import Masthead from './components/Masthead';
 
 export default function App() {
   return (
     <>
+    <Header />
       <Switch>
         <Route exact path="/">
-          <h1><b>Github</b> Jobs</h1>
-          <Header />
+          <Masthead />
           <Main />
         </Route>
         <Route path="/:id">

@@ -116,6 +116,10 @@ function GlobalContextProvider({children}) {
 
     useEffect(() => {
         fetchData();
+    },[description])
+
+    useEffect(() => {
+        fetchData();
     },[location])
 
     useEffect(() => {
